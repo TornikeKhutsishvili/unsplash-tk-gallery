@@ -1,23 +1,21 @@
-import React from 'react'
+import React, { type ReactNode } from 'react'
 import Header from './header/Header'
 import Footer from './footer/Footer'
-import { Outlet } from 'react-router-dom'
 
-const MainLayout:React.FC = () => {
+interface MainLayoutProps {
+  children: ReactNode;
+}
+
+const MainLayout:React.FC<MainLayoutProps> = ({ children }) => {
   return (
-    <div className="bg-gray-100 min-h-screen flex">
-      {/* Right Content */}
-      <div className="flex-1 flex flex-col ml-64">
-        <Header />
-
-        <main className="flex-1 p-6">
-          <Outlet />
-        </main>
-
-        <Footer />
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200">
+      <Header />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {children}
+      </main>
+      <Footer />
     </div>
-  )
+  );
 }
 
 export default MainLayout
