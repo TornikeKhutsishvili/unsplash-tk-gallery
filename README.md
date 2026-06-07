@@ -1,75 +1,133 @@
-# React + TypeScript + Vite
+# 📸 Unsplash Gallery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A photo gallery application built with React, powered by the Unsplash API.
 
-Currently, two official plugins are available:
+**Author:** Tornike Khutsishvili
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🚀 Tech Stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+| Category     | Technology              |
+| ------------ | ----------------------- |
+| Framework    | React 19 + Vite 8       |
+| Language     | TypeScript 6            |
+| Styling      | Tailwind CSS v4         |
+| Routing      | React Router v7         |
+| Server State | TanStack React Query v5 |
+| Client State | Redux Toolkit v2        |
+| HTTP Client  | Axios v1                |
 
-Note: This will impact Vite dev & build performances.
+---
 
-## Expanding the ESLint configuration
+## ✅ Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| Feature                                           | Status |
+| ------------------------------------------------- | ------ |
+| Photo feed from Unsplash API                      | ✅     |
+| Max 20 photos per page                            | ✅     |
+| Real-time search on keystroke                     | ✅     |
+| Debounced search — no request on every keystroke | ✅     |
+| Click photo → Modal with full details & EXIF     | ✅     |
+| Infinite Scroll (IntersectionObserver)            | ✅     |
+| React Query caching — search, pagination, detail | ✅     |
+| Dark / Light mode (Redux)                         | ✅     |
+| Full TypeScript coverage                          | ✅     |
+| SOLID principles + composable components          | ✅     |
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🔑 Getting an Unsplash API Key
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Go to [unsplash.com/developers](https://unsplash.com/developers)
+2. Create a new Application
+3. Copy your **Access Key**
+
+---
+
+## ⚙️ Getting Started
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/unsplash-gallery.git
+cd unsplash-gallery
+
+# 2. Install dependencies
+npm install
+
+# 3. Set up environment variables
+cp .env.example .env
+# Open .env and add your Unsplash Access Key:
+# VITE_UNSPLASH_ACCESS_KEY=your_key_here
+
+# 4. Start the dev server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+App runs at **http://localhost:5173**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🧠 Technical Decisions
+
+### Debounced Search (450ms)
+
+The `useDebounce` hook delays the search query by 450ms after the user stops typing, so no network request is fired on every keystroke.
+
+```ts
+const debouncedValue = useDebounce(value, 450);
+useEffect(() => { onSearch(debouncedValue); }, [debouncedValue]);
+```
+
+### Infinite Scroll
+
+An `IntersectionObserver` watches a sentinel `div` at the bottom of the list. As soon as it enters the viewport, `fetchNextPage()` is called automatically.
+
+```ts
+new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) onIntersect();
+}, { rootMargin: '200px' });
+```
+
+### Caching Strategy
+
+React Query caches every request using a centralised `queryKeys` factory. Re-searching the same keyword or re-opening the same photo never fires a second network request.
+
+```ts
+queryKeys.photos.search('red', 1)  // → ['photos', 'search', 'red', 1]
+queryKeys.photos.detail('abc123')  // → ['photos', 'detail', 'abc123']
+```
+
+* **staleTime: 5 min** — editorial feed and search results
+* **staleTime: 10 min** — individual photo details (modal)
+* Pagination pages are also cached — `page` is part of the query key
+
+### Dark / Light Mode (Redux)
+
+Theme state lives in Redux and is persisted to `localStorage`. On page reload, the saved preference is restored automatically.
+
+```ts
+setTheme(state, action) {
+  state.mode = action.payload;
+  localStorage.setItem('theme', state.mode);
+}
+```
+
+### SOLID Principles
+
+* **S** — Each hook and component has a single responsibility (`photoService`, `queryKeys`, `usePhotos` are fully separate)
+* **O** — `PhotoGrid` is open for extension via props without modifying the component itself
+* **L** — `usePhotos` and `useSearchPhotos` are interchangeable — same return interface
+* **I** — Props interfaces are minimal and focused
+* **D** — `PhotoGrid` has no knowledge of `photoService`; data is injected by the parent
+
+---
+
+## 📦 Scripts
+
+```bash
+npm run dev       # Start dev server
+npm run build     # Production build
+npm run preview   # Preview production build
+npm run lint      # Run ESLint
 ```
