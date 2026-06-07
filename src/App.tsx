@@ -1,7 +1,12 @@
+import { Suspense } from "react"
+import AppRoutes from "./features/routes/AppRoutes"
+
 function App() {
   return (
     <>
-      <section id="container"></section>
+      <Suspense fallback={<div>Loading...</div>}>
+        <AppRoutes />
+      </Suspense>
     </>
   )
 }
