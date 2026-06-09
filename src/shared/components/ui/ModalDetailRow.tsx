@@ -1,4 +1,4 @@
-function DetailRow({ label, value }: { label: string; value: string }) {
+export function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-start justify-between gap-2 text-sm">
       <span className="text-gray-500 dark:text-gray-400 shrink-0">{label}</span>
@@ -6,5 +6,3 @@ function DetailRow({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
-export default DetailRow;
