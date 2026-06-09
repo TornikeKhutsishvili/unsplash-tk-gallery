@@ -1,4 +1,4 @@
-function StatBox({ label, value, icon }: { label: string; value: string; icon: string }) {
+export function StatBox({ label, value, icon }: { label: string; value: string; icon: string }) {
   return (
     <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-gray-50 dark:bg-gray-800">
       <span className="text-lg">{icon}</span>
@@ -7,5 +7,3 @@ function StatBox({ label, value, icon }: { label: string; value: string; icon: s
     </div>
   );
 }
-
-export default StatBox;

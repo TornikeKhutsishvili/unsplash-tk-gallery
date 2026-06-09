@@ -2,7 +2,6 @@
   Centralised query key factory.
   Helps React Query cache invalidation stay consistent across the app.
 */
-
 export const queryKeys = {
   photos: {
     all: ['photos'] as const,

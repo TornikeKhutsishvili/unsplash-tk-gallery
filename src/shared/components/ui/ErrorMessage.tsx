@@ -1,3 +1,5 @@
+import { Button } from "./ui-general/Button";
+
 interface ErrorMessageProps {
   message?: string;
   onRetry?: () => void;
@@ -21,13 +23,9 @@ export function ErrorMessage({
       </div>
       <p className="text-gray-600 dark:text-gray-400 max-w-sm">{message}</p>
       {onRetry && (
-        <button
-          type="button"
-          onClick={onRetry}
-          className="px-5 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
-        >
+        <Button onClick={onRetry} size="lg">
           ხელახლა ცდა
-        </button>
+        </Button>
       )}
     </div>
   );
