@@ -49,7 +49,7 @@ export function PhotoModal({ photoId, previewPhoto, onClose }: PhotoModalProps) 
       >
         {/* Close button */}
         <Button variant="ghost" onClick={onClose} aria-label="Close"
-          className="absolute top-4 right-4 z-10 w-9 h-9 p-0
+          className="absolute top-4 right-4 z-10 w-15 h-15 p-0
                     bg-black/30 hover:bg-black/50 text-white rounded-full"
         >
           {CloseIcon}
