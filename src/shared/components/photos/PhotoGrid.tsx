@@ -20,7 +20,9 @@ export function PhotoGrid({
   photos, onPhotoClick, hasNextPage, isFetchingNextPage, fetchNextPage
 }: PhotoGridProps) {
   const onIntersect = useCallback(() => {
+    // console.log('Sentinel intersected!', { hasNextPage, isFetchingNextPage });
     if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+    else console.log('Not fetching:', { hasNextPage, isFetchingNextPage });
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const sentinelRef = useInfiniteScroll(onIntersect, hasNextPage && !isFetchingNextPage);

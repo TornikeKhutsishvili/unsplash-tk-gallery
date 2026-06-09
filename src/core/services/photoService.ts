@@ -3,19 +3,34 @@ import type {
   FetchPhotosParams, SearchPhotosParams, UnsplashPhoto, UnsplashSearchResponse
 } from "../interfaces/unsplash.interface";
 
-const PER_PAGE = 20;
+const PER_PAGE = 21;
 
 export const photoService = {
   /* Fetch editorial (trending) photos — used on initial load */
   getPhotos: async ({ page, perPage = PER_PAGE }: FetchPhotosParams): Promise<UnsplashPhoto[]> => {
-    const { data } = await unsplashApi.get<UnsplashPhoto[]>('/photos', {
-      params: {
-        page,
-        per_page: perPage,
-        order_by: 'popular'
-      },
-    });
-    return data;
+    try {
+      // const { data, headers } = await unsplashApi.get<UnsplashPhoto[]>('/photos', {
+      const { data } = await unsplashApi.get<UnsplashPhoto[]>('/photos', {
+        params: {
+          page,
+          per_page: perPage,
+          order_by: 'popular'
+        },
+      });
+
+      // const debugInfo = {
+      //   itemsReceived: data.length,
+      //   expectedPerPage: perPage,
+      //   xTotalHeader: headers['x-total'],
+      //   xTotalPagesHeader: headers['x-total-pages']
+      // }
+      // console.log(`📸 Page ${page}:`, debugInfo);
+      
+      return data;
+    } catch (error) {
+      console.error('Error fetching photos:', error);
+      throw error;
+    }
   },
 
   /* Search photos by keyword */

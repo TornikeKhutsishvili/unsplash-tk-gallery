@@ -62,9 +62,7 @@ const Home:React.FC = () => {
         <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
           ფოტო გალერეა
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-8 text-lg">
-          Unsplash-ის საუკეთესო ფოტოები
-        </p>
+        <p className="text-gray-500 dark:text-gray-400 mb-8 text-lg">Unsplash-ის საუკეთესო ფოტოები</p>
         <SearchBar onSearch={handleSearch} />
 
         {/* Search result count */}
@@ -84,11 +82,8 @@ const Home:React.FC = () => {
         <PhotoGridSkeleton />
       ) : (
         <PhotoGrid 
-          photos={photos} 
-          onPhotoClick={handlePhotoClick} 
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage} 
-          fetchNextPage={fetchNextPage}
+          photos={photos} onPhotoClick={handlePhotoClick} hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage}
         />
       )}
 
@@ -100,4 +95,4 @@ const Home:React.FC = () => {
   )
 }
 
-export default Home
+export default Home;

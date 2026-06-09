@@ -1,9 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import type { UnsplashPhoto } from "../../core/interfaces/unsplash.interface";
 import { queryKeys } from "../../core/query/queryKey";
 import { photoService } from "../../core/services/photoService";
+import type { UnsplashPhoto } from "../../core/interfaces/unsplash.interface";
 
-const PER_PAGE = 20;
+const PER_PAGE = 21;
 
 interface UseSearchPhotosResult {
   photos: UnsplashPhoto[];
@@ -29,12 +29,10 @@ export function useSearchPhotos(query: string): UseSearchPhotosResult {
       photoService.searchPhotos({ query, page: pageParam as number, perPage: PER_PAGE }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-      // If we got fewer results than PER_PAGE, we've reached the end
-      if (lastPage.results.length < PER_PAGE) {
-        return undefined;
-      }
+      if ((lastPageParam as number) >= lastPage.total_pages) return undefined;
+
       // Otherwise, calculate the next page number
-      return lastPageParam + 1;
+      return (lastPageParam as number) + 1;
     },
     enabled,
     staleTime: 5 * 60 * 1000,
