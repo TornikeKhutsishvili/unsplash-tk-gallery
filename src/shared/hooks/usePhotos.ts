@@ -16,8 +16,8 @@ interface UsePhotosResult {
 }
 
 /*
- Manages fetching the editorial (trending) photo list with infinite scroll.
- React Query caches each page, so re-visiting the same page costs 0 requests.
+  Manages fetching the editorial (trending) photo list with infinite scroll.
+  React Query caches each page, so re-visiting the same page costs 0 requests.
 */
 export function usePhotos(): UsePhotosResult {
   const query = useInfiniteQuery({
@@ -25,9 +25,16 @@ export function usePhotos(): UsePhotosResult {
     queryFn: ({ pageParam }) =>
       photoService.getPhotos({ page: pageParam as number, perPage: PER_PAGE }),
     initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) =>
-      lastPage.length === PER_PAGE ? allPages.length + 1 : undefined,
+    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      // If we got fewer items than PER_PAGE, we've reached the end
+      if (lastPage.length < PER_PAGE) {
+        return undefined;
+      }
+      // Otherwise, calculate the next page number
+      return lastPageParam + 1;
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // Cache for 10 minutes
   });
 
   const photos = query.data?.pages.flat() ?? [];

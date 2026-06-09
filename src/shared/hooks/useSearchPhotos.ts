@@ -28,10 +28,17 @@ export function useSearchPhotos(query: string): UseSearchPhotosResult {
     queryFn: ({ pageParam }) =>
       photoService.searchPhotos({ query, page: pageParam as number, perPage: PER_PAGE }),
     initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) =>
-      lastPage.results.length === PER_PAGE ? allPages.length + 1 : undefined,
+    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      // If we got fewer results than PER_PAGE, we've reached the end
+      if (lastPage.results.length < PER_PAGE) {
+        return undefined;
+      }
+      // Otherwise, calculate the next page number
+      return lastPageParam + 1;
+    },
     enabled,
     staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000, // Cache for 10 minutes
   });
 
   const photos = infiniteQuery.data?.pages.flatMap((p) => p.results) ?? [];

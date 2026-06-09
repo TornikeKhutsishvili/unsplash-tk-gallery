@@ -83,8 +83,12 @@ const Home:React.FC = () => {
       ) : isLoading ? (
         <PhotoGridSkeleton />
       ) : (
-        <PhotoGrid photos={photos} onPhotoClick={handlePhotoClick} hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage}
+        <PhotoGrid 
+          photos={photos} 
+          onPhotoClick={handlePhotoClick} 
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage} 
+          fetchNextPage={fetchNextPage}
         />
       )}
 
